@@ -4,15 +4,15 @@ using System.Data.SqlClient;
 
 namespace Api_Husat.Data
 {
-    public class Conection
+    public class Connection
     {
         public SqlConnection sqlConnection;
         public SqlCommand command;
-        public Conection() { }
+        public Connection() { }
         private int nTimeOut = 7200;
-        public Conection(string sql)
+        public Connection(string sql)
         {
-            String cadena = @"Initial Catalog=Husat; Data Source=DESKTOP-ROLGOA1\SQLEXPRESS; User ID=pruebas;Password=123456";
+            String cadena = @"Initial Catalog=Husat; Data Source=365.database.windows.net; User ID=husat;Password=Mihus@t1";
             sqlConnection = new SqlConnection(cadena);
             sqlConnection.Open();
 

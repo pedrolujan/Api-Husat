@@ -10,8 +10,8 @@ namespace Api_Husat.Data
         public List<Cliente> fnListarClientes(int _id, int _tipoCon)
         {
             List<Cliente> lstCliente = new List<Cliente>();
-            Conection objConecta = null;
-            objConecta = new Conection("");
+            Connection objConecta = null;
+            objConecta = new Connection("");
             SqlParameter[] pa = new SqlParameter[2];
             try
             {

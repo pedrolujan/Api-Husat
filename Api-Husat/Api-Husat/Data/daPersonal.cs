@@ -10,14 +10,14 @@ namespace Api_Husat.Data
         {
 
             SqlParameter[] pa = new SqlParameter[4];
-            Conection objCon = null;
+            Connection objCon = null;
             Int32 idAccede = 0;
             Int32 pnIdUsuario = 0;
             Personal personal = new Personal();
             try
             {
 
-                objCon = new Conection("");
+                objCon = new Connection("");
 
                 pa[0] = new SqlParameter("@pecUsuario", SqlDbType.NVarChar, 20);
                 pa[0].Value = pcUsuario;
@@ -62,7 +62,7 @@ namespace Api_Husat.Data
         {
             SqlParameter[] pa = new SqlParameter[1];
             DataTable dtVentaG = new DataTable();
-            Conection objCnx = null;
+            Connection objCnx = null;
             Personal cUsuario = new Personal();
 
             List<Personal> lstPersonal = new List<Personal>();
@@ -71,7 +71,7 @@ namespace Api_Husat.Data
                 pa[0] = new SqlParameter("@idUsuario", SqlDbType.TinyInt) { Value = Usuario };
 
 
-                objCnx = new Conection("");
+                objCnx = new Connection("");
                 dtVentaG = objCnx.EjecutarProcedimientoDT("uspObtenerUsuarioActual", pa);
                 foreach (DataRow drMenu in dtVentaG.Rows)
                 {
