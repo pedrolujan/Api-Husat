@@ -12,7 +12,11 @@ namespace Api_Husat.Data
         private int nTimeOut = 7200;
         public Connection(string sql)
         {
-            String cadena = @"Initial Catalog=Husat; Data Source=365.database.windows.net; User ID=husat;Password=Mihus@t1";
+            String cadena = "";
+            var constructor = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+
+            cadena=constructor.GetSection("ConnectionStrings:conection").Value;
+
             sqlConnection = new SqlConnection(cadena);
             sqlConnection.Open();
 
@@ -59,6 +63,30 @@ namespace Api_Husat.Data
                 da = new SqlDataAdapter(command);
                 da.Fill(dtResultado);
                 return dtResultado;
+            }
+            catch (Exception EX)
+            {
+                throw new Exception(EX.Message);
+            }
+
+        }
+        public DataSet EjecutarProcedimientoDS(string storedProcedureName, params object[] parameterValues)
+        {
+            DataSet dsResultado = new DataSet();
+            SqlDataAdapter da;
+            try
+            {
+                command = new SqlCommand(storedProcedureName, sqlConnection);
+                command.CommandTimeout = nTimeOut;
+                command.CommandType = CommandType.StoredProcedure;
+
+                if (parameterValues != null)
+                {
+                    AssignParameterValues(command, parameterValues);
+                }
+                da = new SqlDataAdapter(command);
+                da.Fill(dsResultado);
+                return dsResultado;
             }
             catch (Exception EX)
             {

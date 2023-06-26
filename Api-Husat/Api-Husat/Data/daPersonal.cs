@@ -47,7 +47,8 @@ namespace Api_Husat.Data
             catch (Exception ex)
             {
                 //objUtil.gsLogAplicativo("DAAcceso.svc", "fnAccederSistema", ex.Message);
-                throw new Exception(ex.Message);
+                //throw new Exception(ex.Message);
+                return personal;
             }
             finally
             {
@@ -111,7 +112,8 @@ namespace Api_Husat.Data
             catch (Exception ex)
             {
                 //objUtil.gsLogAplicativo("DACliente.cs", "daBuscarCliente", ex.Message);
-                throw new Exception(ex.Message);
+                //throw new Exception(ex.Message);
+                return cUsuario;
             }
             finally
             {

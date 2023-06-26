@@ -33,5 +33,23 @@ namespace Api_Husat.Controllers
 
             
         }
+
+        [HttpGet]
+        [Route("ObtenerIngresos")]
+        public IActionResult Get([FromQuery] Busquedas busquedas)        
+        {
+            ResponseData resData = new ResponseData();
+            daDashboard daDashboard= new daDashboard();
+           var dat =daDashboard.daBuscarDashBoardIngresos(busquedas);
+
+            resData = new ResponseData
+            {
+                state = true,
+                message = "Se encontraron resultados",
+                result = new List<object> { dat.Item1, dat.Item2 }
+            };
+
+            return Ok(resData);
+        }
     }
 }

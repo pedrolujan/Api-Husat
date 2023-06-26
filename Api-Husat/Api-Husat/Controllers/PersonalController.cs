@@ -6,7 +6,7 @@ namespace Api_Husat.Controllers
 {
     [ApiController]
     [Route("Personal")]
-    public class PersonalController
+    public class PersonalController : ControllerBase
     {
         [HttpGet]
         [Route("Login")]
@@ -68,5 +68,52 @@ namespace Api_Husat.Controllers
                 };
             }
         }
+
+        [HttpGet]
+        [Route("Perfil")]
+        public dynamic fnDevolberDatosPerfil(Int32 _idUsuario)
+        {
+            daPersonal dp = new daPersonal();
+            Personal personal = new Personal();
+            ResponseData resData = new ResponseData();
+            if (_idUsuario>0)
+            {
+                personal = dp.daDevolverPersonal(_idUsuario);
+                if (personal.idPersonal > 0)
+                {
+                    resData = new ResponseData
+                    {
+                        state = true,
+                        message = "Datos encontrados",
+                        result = personal
+                    };
+                }
+                else
+                {
+                    resData = new ResponseData
+                    {
+                        state = false,
+                        message = "No se encontraron resultados",
+                        result = personal
+                    };
+
+                }
+            }
+            else
+            {
+                resData = new ResponseData
+                {
+                    state = false,
+                    message = "el usuario no existe",
+                    result = personal
+                };
+            }
+                
+                
+                return resData;
+
+            
+        }
+
     }
 }
