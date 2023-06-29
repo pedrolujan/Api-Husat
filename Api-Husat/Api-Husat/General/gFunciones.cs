@@ -77,6 +77,20 @@ namespace Api_Husat.General
 
         }
 
+        public List<Consultas> blBuscarConsultas(String simcard, Int32 tipoCon)
+        {
+            daGeneral dc = new daGeneral();
+            try
+            {
+                return dc.daBuscarConsultas(simcard, tipoCon);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+
+            }
+        }
+
         public static List<Combobox> blLlenarCboSegunTablaTipoCon(String nomCampoId, String nomCampoNombre, String nomTabla, String nomEstado, String condicionDeEstado, Boolean buscar)
         {
 

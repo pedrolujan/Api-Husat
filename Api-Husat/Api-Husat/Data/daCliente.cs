@@ -28,9 +28,9 @@ namespace Api_Husat.Data
                     lstCliente.Add(new Cliente
                     {
                         Id = Convert.ToInt32(d["idCliente"]),
-                        Name = d["cNombre"].ToString(),
+                        nombres = d["cNombre"].ToString(),
                         Edad = 25,
-                        Email = d["cTelCelular"].ToString()
+                        Celular = d["cTelCelular"].ToString()
                     });
                 }
                 return lstCliente;

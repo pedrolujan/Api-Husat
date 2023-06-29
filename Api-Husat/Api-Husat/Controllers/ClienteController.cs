@@ -18,9 +18,9 @@ namespace Api_Husat.Controllers
             lstCliente.Add(new Cliente
             {
                 Id = 1,
-                Name = "Julio",
+                nombres = "Julio",
                 Edad = 25,
-                Email = "Dia@gmail.com"
+                Celular = "Dia@gmail.com"
             });
 
 

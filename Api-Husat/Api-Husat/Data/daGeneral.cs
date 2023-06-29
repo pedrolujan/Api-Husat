@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
 using Api_Husat.Models;
+using System.Collections.Generic;
 
 namespace Api_Husat.Data
 {
@@ -54,7 +55,136 @@ namespace Api_Husat.Data
             }
 
         }
+        public List<Consultas> daBuscarConsultas(String pcBuscar, Int32 tipoCon)
+        {
+            SqlParameter[] pa = new SqlParameter[2];
+            DataTable dtEquipo = new DataTable();
+            Connection objCnx = null;
+            List<Consultas> lstConsultas = new List<Consultas>();
+            Consultas consultas = new Consultas();
 
+            try
+            {
+                pa[0] = new SqlParameter("@pcBuscar", SqlDbType.VarChar, 30);
+                pa[0].Value = pcBuscar;
+                pa[1] = new SqlParameter("@tipoCon", SqlDbType.Int);
+                pa[1].Value = tipoCon;
+                objCnx = new Connection("");
+                dtEquipo = objCnx.EjecutarProcedimientoDT("uspBuscarConsultas", pa);
+                if (tipoCon==0)
+                {
+                    foreach (DataRow dt in dtEquipo.Rows)
+                    {
+                        lstConsultas.Add(new Consultas
+                        {
+                            Id = Convert.ToInt32(dt["id"].ToString()),
+                            Description = dt["nombre"].ToString()
+
+                        });
+                    }
+                }else if (tipoCon == 1)
+                {
+                    Equipos equipos = new Equipos();
+                    MarcaEquipo marcaEquipo = new MarcaEquipo();
+                    ModeloEquipo modeloEquipo = new ModeloEquipo();
+                    Vehiculo vehiculo= new Vehiculo();
+                    MarcaVehiculo marcaVehiculo = new MarcaVehiculo();
+                    ModeloVehiculo modeloVehiculo= new ModeloVehiculo();
+                    ModoUso modoUso =new ModoUso();
+                    ClaseVehiculo claseVehiculo = new ClaseVehiculo();
+                    Cliente cliente = new Cliente();
+                    SimCard simCard= new SimCard();
+                    Plan plan = new Plan();
+                    TipoTarifa tipoTarifa = new TipoTarifa();
+                    TipoPlan tipoPlan = new TipoPlan();
+                    Ciclo ciclo = new Ciclo();
+                    Plataforma plataforma=new Plataforma();
+                    Operador operador = new Operador();
+                    
+
+                    foreach (DataRow dt in dtEquipo.Rows)
+                    {
+                        simCard.Id= Convert.ToInt32(dt["idChip"].ToString());
+                        simCard.cSimCard = dt["cSimCard"].ToString();
+                        simCard.NumRecibo = dt["numeroRecibo"].ToString();
+                        operador.Name = dt["operador"].ToString();
+                        simCard.operador= operador;
+
+                        equipos.Id= Convert.ToInt32(dt["idEquipoImeis"].ToString());
+                        equipos.codDocCompra= dt["cDocCompra"].ToString();
+                        equipos.Nombre= dt["NombreEquipo"].ToString();
+                        equipos.Imei= dt["Imei"].ToString();
+                        equipos.Serie = dt["nSerieEquipo"].ToString();
+
+                        marcaEquipo.Nombre = Convert.ToString(dt["cNombreMarca"]);
+                        modeloEquipo.Nombre = Convert.ToString(dt["cNombreModelo"]);
+
+                        equipos.modeloEquipo= modeloEquipo;
+                        equipos.marcaEquipo= marcaEquipo;
+
+                        cliente.Id= Convert.ToInt32(dt["idCliente"].ToString());
+                        cliente.nombres = dt["nombreCliente"].ToString();
+                        cliente.ApellidosPaterno = dt["cApePat"].ToString();
+                        cliente.ApellidosMaterno = dt["cApeMat"].ToString();
+                        cliente.documentoIdentidad = dt["cDocumento"].ToString();
+                        cliente.Celular = dt["cTelCelular"].ToString();
+                        cliente.Contacto1 = dt["cContactoNom1"].ToString();
+                        cliente.CelularContacto1 = dt["cContactoCel1"].ToString();
+
+                        vehiculo.Id= Convert.ToInt32(dt["idVehiculo"].ToString());
+                        vehiculo.Placa = dt["vPlaca"].ToString();
+                        vehiculo.Serie = dt["vSerie"].ToString();
+                        vehiculo.Anio = dt["vAnio"].ToString();
+                        vehiculo.Color = dt["vColor"].ToString();
+
+                        claseVehiculo.Nombre= dt["cNombreClaseV"].ToString();
+                        marcaVehiculo.Nombre= dt["nombreMarcaV"].ToString();
+                        modeloVehiculo.Nombre= dt["nombreModeloV"].ToString();
+
+                        modoUso.Nombre= dt["cUsoV"].ToString();
+
+                        vehiculo.claseVehiculo = claseVehiculo;
+                        vehiculo.marcaVehiculo= marcaVehiculo;
+                        vehiculo.modeloVehiculo = modeloVehiculo;
+                        vehiculo.modoUso=modoUso;
+
+                        tipoTarifa.Nombre= dt["TipoTarifa"].ToString();
+                        tipoPlan.nombre= dt["contrato"].ToString();
+                        plan.Name = dt["nombrePlan"].ToString();
+                        plan.tipoContrato = dt["tipoContrato"].ToString();
+
+                        ciclo.nombre= dt["cDia"].ToString();
+                        plataforma.Nombre= dt["nombrePlataforma"].ToString();
+                        
+                        plan.tipoPlan = tipoPlan;
+                        plan.tipoTarifa= tipoTarifa;
+                        plan.ciclo= ciclo;
+
+
+                        consultas.cliente = cliente;
+                        consultas.equipo = equipos;
+                        consultas.plan = plan;
+                        consultas.vehiculo= vehiculo;
+                        consultas.simCard= simCard;
+                    }
+
+                lstConsultas.Add(consultas);
+                }
+
+                return lstConsultas;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                if (objCnx != null)
+                    objCnx.CerrarConnection();
+                objCnx = null;
+            }
+
+        }
         public DataTable daDevolverSoloUsuario(Boolean chk, String dtI, String dtFin, Int32 tipCOn)
         {
             SqlParameter[] pa = new SqlParameter[4];
@@ -99,17 +229,20 @@ namespace Api_Husat.Data
         }
         public List<CajaChica> daObtenerImporteCaja(String dtFecha, Int32 idUsuario)
         {
-            SqlParameter[] pa = new SqlParameter[2];
+            SqlParameter[] pa = new SqlParameter[3];
             DataTable dtResult = new DataTable();
             Connection objCnx = null;
-            List<CajaChica> lstImporte = new List<CajaChica>(); ;
+            List<CajaChica> lstImporte = new List<CajaChica>();
 
             try
             {
-                pa[0] = new SqlParameter("@fechaActual", SqlDbType.Date);
+                pa[0] = new SqlParameter("@fechaBusqueda", SqlDbType.Date);
                 pa[0].Value = dtFecha;
-                pa[1] = new SqlParameter("@idUsuario", SqlDbType.Int);
-                pa[1].Value = idUsuario;
+                pa[1] = new SqlParameter("@fechaActual", SqlDbType.Date);
+                pa[1].Value = DateTime.Now;
+                pa[2] = new SqlParameter("@idUsuario", SqlDbType.Int);
+                pa[2].Value = idUsuario;
+
 
 
                 objCnx = new Connection("");
